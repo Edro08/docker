@@ -1,0 +1,84 @@
+services:
+  # Servicio de MySQL
+  mysql:
+    # Imagen de MySQL
+    image: mysql:8
+    # Nombre del contenedor
+    container_name: mysql-server
+    # Reinicio automático
+    restart: always
+    # Variables de entorno
+    environment:
+      # Contraseña del usuario root
+      MYSQL_ROOT_PASSWORD: admin
+      # (Opcional) Base de datos que se crea al iniciar
+      MYSQL_DATABASE: dbTest
+      # (Opcional) Usuario adicional
+      MYSQL_USER: user
+      # (Opcional) Contraseña del usuario adicional
+      MYSQL_PASSWORD: password
+    # Puertos expuestos al host
+    ports:
+      - "3306:3306"
+    # Volumen para persistencia de datos
+    volumes:
+      - mysql-data:/var/lib/mysql
+    # Red del contenedor
+    networks:
+      - db-dev
+
+  # Servicio de PostgreSQL
+  postgres:
+    # Imagen de PostgreSQL
+    image: postgres:16
+    # Nombre del contenedor
+    container_name: postgres-server
+    # Reinicio automático
+    restart: always
+    # Variables de entorno
+    environment:
+      # Usuario administrador
+      POSTGRES_USER: postgres
+      # Contraseña del usuario
+      POSTGRES_PASSWORD: admin
+      # (Opcional) Base de datos que se crea al iniciar
+      POSTGRES_DB: dbTest
+      # (Opcional) Usuario adicional
+      POSTGRES_USER_CUSTOM: user
+      # (Opcional) Contraseña del usuario adicional
+      POSTGRES_PASSWORD_CUSTOM: password
+    # Puertos expuestos al host
+    ports:
+      - "5432:5432"
+    # Volumen para persistencia de datos
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    # Red del contenedor
+    networks:
+      - db-dev
+
+# Sección de volúmenes
+# Esto sería para que Compose cree los volúmenes automáticamente si no existen
+volumes:
+  mysql-data:
+  postgres-data:
+
+# Estamos usando volúmenes ya existentes (creados manualmente o con Compose previo)
+#volumes:
+#  # Volumen de MySQL externo
+#  mysql-data:
+#    external: true
+#    name: mysql-data
+#  # Volumen de PostgreSQL externo
+#  postgres-data:
+#    external: true
+#    name: postgres-data
+
+# Red de Docker
+# Red bridge llamada 'dev' para que los contenedores se comuniquen
+networks:
+  db-dev:
+    # Nombre de la red
+    name: db-dev
+    # Tipo de red bridge
+    driver: bridge
