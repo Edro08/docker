@@ -1,5 +1,8 @@
 services:
   # Servicio de MySQL
+  # Imagen oficial de MySQL versión 8
+  # Nombre del contenedor en Docker
+  # Reinicio automático si el contenedor se cae
   mysql:
     # Imagen de MySQL
     image: mysql:8
@@ -7,16 +10,22 @@ services:
     container_name: mysql-server
     # Reinicio automático
     restart: always
-    # Variables de entorno
+    # Archivo de variables de entorno
+    env_file:
+      - .env
+    # Variables de entorno que se leen del archivo .env
     environment:
       # Contraseña del usuario root
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       # (Opcional) Base de datos que se crea al iniciar
-      MYSQL_DATABASE: dbTest
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       # (Opcional) Usuario adicional
-      MYSQL_USER: user
+      MYSQL_USER: ${MYSQL_USER}
       # (Opcional) Contraseña del usuario adicional
-      MYSQL_PASSWORD: password
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    # Exponer solo a otros contenedores en la red 'db-dev'
+    # expose:
+    #   - "3306"
     # Puertos expuestos al host
     ports:
       - "3306:3306"
@@ -28,6 +37,9 @@ services:
       - db-dev
 
   # Servicio de PostgreSQL
+  # Imagen oficial de PostgreSQL versión 16
+  # Nombre del contenedor en Docker
+  # Reinicio automático si el contenedor se cae
   postgres:
     # Imagen de PostgreSQL
     image: postgres:16
@@ -35,18 +47,24 @@ services:
     container_name: postgres-server
     # Reinicio automático
     restart: always
-    # Variables de entorno
+    # Archivo de variables de entorno
+    env_file:
+      - .env
+    # Variables de entorno que se leen del archivo .env
     environment:
-      # Usuario administrador
-      POSTGRES_USER: postgres
-      # Contraseña del usuario
-      POSTGRES_PASSWORD: admin
+      # Usuario administrador (superusuario)
+      POSTGRES_USER: ${POSTGRES_USER}
+      # Contraseña del usuario administrador
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       # (Opcional) Base de datos que se crea al iniciar
-      POSTGRES_DB: dbTest
+      POSTGRES_DB: ${POSTGRES_DB}
       # (Opcional) Usuario adicional
-      POSTGRES_USER_CUSTOM: user
+      POSTGRES_USER_CUSTOM: ${POSTGRES_USER_CUSTOM}
       # (Opcional) Contraseña del usuario adicional
-      POSTGRES_PASSWORD_CUSTOM: password
+      POSTGRES_PASSWORD_CUSTOM: ${POSTGRES_PASSWORD_CUSTOM}
+    # Exponer solo a otros contenedores en la red 'db-dev'
+    # expose:
+    #   - "5432"
     # Puertos expuestos al host
     ports:
       - "5432:5432"
@@ -58,24 +76,15 @@ services:
       - db-dev
 
 # Sección de volúmenes
-# Esto sería para que Compose cree los volúmenes automáticamente si no existen
+# Volúmenes declarados para persistencia de datos
 volumes:
+  # Volumen para MySQL
   mysql-data:
+  # Volumen para PostgreSQL
   postgres-data:
 
-# Estamos usando volúmenes ya existentes (creados manualmente o con Compose previo)
-#volumes:
-#  # Volumen de MySQL externo
-#  mysql-data:
-#    external: true
-#    name: mysql-data
-#  # Volumen de PostgreSQL externo
-#  postgres-data:
-#    external: true
-#    name: postgres-data
-
 # Red de Docker
-# Red bridge llamada 'dev' para que los contenedores se comuniquen
+# Red bridge llamada 'db-dev' para que los contenedores se comuniquen
 networks:
   db-dev:
     # Nombre de la red
