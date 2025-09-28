@@ -2,6 +2,7 @@
 
 Este repositorio centraliza **stacks de Docker Compose** para levantar rápidamente servicios comunes de desarrollo.
 La meta es que no tengas que instalar nada manualmente, solo levantar contenedores y empezar a trabajar.
+
 ---
 
 ## ✔ Requisitos
@@ -63,6 +64,8 @@ Stack para autenticación y gestión de identidades (SSO).
   - Base de datos (pendiente de integración)
 - Uso previsto: Pruebas de login, OAuth2 y gestión de usuarios.
 - Estado: Definición en progreso en docker-compose.
+
+---
 
 ## 🚨 **Avisos:**
 - Este proyecto es para uso en entornos locales o de desarrollo. 
