@@ -57,7 +57,7 @@ Stack para experimentar con modelos de lenguaje mediante una interfaz web.
 - **Persistencia:** Los datos se guardan en volúmenes para no perder la configuración.
 - **Configuración:** Variables de entorno definidas en `.env`.
 
-### 🔹 Keycloak (en preparación)
+### 🔹 Keycloak
 Stack para autenticación y gestión de identidades (SSO).
 - **Incluye:**
   - Contenedor `Keycloak 26.3.5`
