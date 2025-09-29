@@ -1,0 +1,77 @@
+services:
+  mysql:
+    # Imagen de MySQL
+    image: mysql:8
+    # Nombre del contenedor
+    container_name: kc-mysql-server
+    # Reinicio automático
+    restart: always
+    # Archivo de variables de entorno
+    env_file:
+      - .env
+    # Variables de entorno que se leen del archivo .env
+    environment:
+      # Contraseña del usuario root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      # (Opcional) Base de datos que se crea al iniciar
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      # (Opcional) Usuario adicional
+      MYSQL_USER: ${MYSQL_USER}
+      # (Opcional) Contraseña del usuario adicional
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    # Puertos expuestos al host
+    ports:
+      - "3306:3306"
+    # Volumen para persistencia de datos
+    volumes:
+      - mysql-data:/var/lib/mysql
+    # Red del contenedor
+    networks:
+      - kc-dev
+
+  keycloak:
+    # Imagen de keycloak
+    image: quay.io/keycloak/keycloak:26.3.5
+    # Nombre del contenedor
+    container_name: keycloak
+    # Reinicio automático
+    restart: always
+    # Archivo de variables de entorno
+    env_file:
+      - .env
+    # Variables de entorno que se leen del archivo .env
+    environment:
+      # Usuario y contraseña del administrador de Keycloak
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+      # Configuración de la base de datos MySQL
+      KC_DB: ${KC_DB}
+      KC_DB_URL_HOST: ${KC_DB_URL_HOST}
+      KC_DB_URL_PORT: ${KC_DB_URL_PORT}
+      KC_DB_URL_DATABASE: ${KC_DB_URL_DATABASE}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+
+      # Evita validación estricta del hostname
+      KC_HOSTNAME_STRICT: false
+
+    # Ejecuta Keycloak en modo desarrollo
+    command: ["start-dev"]
+    # Puertos expuestos al host
+    ports:
+      - "8080:8080"
+    # Espera a que MySQL esté levantado
+    depends_on:
+      - mysql
+    # Red del contenedor
+    networks:
+      - kc-dev
+
+volumes:
+  mysql-data:
+
+networks:
+  kc-dev:
+    name: kc-dev
+    driver: bridge
