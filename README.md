@@ -60,10 +60,14 @@ Stack para experimentar con modelos de lenguaje mediante una interfaz web.
 ### 🔹 Keycloak (en preparación)
 Stack para autenticación y gestión de identidades (SSO).
 - **Incluye:**
-  - Contenedor de Keycloak
-  - Base de datos (pendiente de integración)
-- Uso previsto: Pruebas de login, OAuth2 y gestión de usuarios.
-- Estado: Definición en progreso en docker-compose.
+  - Contenedor `Keycloak 26.3.5`
+  - Base de datos `MySQL 8`
+- **Puerto expuesto:**
+  - Keycloak → `localhost:8080`
+  - MySQL → `localhost:3306`
+- **Persistencia:** Los datos de MySQL se almacenan en volumen Docker (mysql-data) y no se pierden al reiniciar contenedores.
+- **Configuración:** Variables de entorno definidas en `.env`.
+- **Uso previsto:** Pruebas de login, OAuth2 y gestión de usuarios en entornos locales.
 
 ---
 
